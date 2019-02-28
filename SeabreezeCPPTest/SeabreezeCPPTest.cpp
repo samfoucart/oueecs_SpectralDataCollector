@@ -18,6 +18,8 @@
 #include <iostream>
 #include "seabreezeapi/SeaBreezeAPI.h"
 #include <fstream>
+#include <ctime>
+
 
 
 
@@ -96,9 +98,28 @@ int main()
 	// Allocate Spectrum
 	double * spectrum = new double[numPixels];
 
+	// Set Up Files
+	std::ofstream outs;
+	std::string filename = "";
+	std::string deviceString = deviceName;
+	filename = "spectrum-" + deviceString + ".MAT";
+	outs.open(filename.c_str());
+	if (outs.fail())
+	{
+		std::cerr << "Error saving file." << std::endl;
+	}
+	
+
+
+
+
 	// Iterate over Spectra
-	std::cout << "The program will now read out the spectra..." << std::endl
-		<< '[';
+	std::cout << "The program will now read out the spectra..." << std::endl;
+	outs << "# Created by Ohio University Spectrometer" << std::endl
+		<< "# name: spectrum" << std::endl
+		<< "# type: matrix" << std::endl
+		<< "# rows: 1" << std::endl
+		<< "# columns: " << numPixels << std::endl;
 
 	char quit = 'y';
 	while (quit != 'n' && quit != 'N')
@@ -111,10 +132,7 @@ int main()
 		
 		for (int i = 0; i < numPixels; ++i)
 		{
-			if (i != numPixels - 1)
-				std::cout << spectrum[i] << ", ";
-			else
-				std::cout << spectrum[i] << "]" << std::endl;
+			outs << " " << spectrum[i];
 		}
 		
 		std::cout << "Get another sample? (Y) or (N)";
@@ -122,7 +140,7 @@ int main()
 	}
 	
 
-
+	outs.close();
 
 
 
