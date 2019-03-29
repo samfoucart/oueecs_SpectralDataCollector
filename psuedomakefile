@@ -1,0 +1,5 @@
+To compile SeabreezeCPPTest on raspberry pi, the command is:
+
+g++ src/SeabreezeCPPTest.cpp -I /home/pi/PACE/seabreeze-3.0.11/SeaBreeze/include/ -L /home/pi/PACE/seabreeze-3.0.11/SeaBreeze/lib -lseabreeze -lpthread -lstdc++ -lusb -o build/SeabreezeCPPTest
+
+This absolutely needs -lusb or it won't work. I don't know about -lpthread or -lstdc++.
