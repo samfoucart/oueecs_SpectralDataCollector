@@ -1,4 +1,4 @@
-# Spectrometer-CPP-MATLAB-Output
+# Spectrometer-Data-Collection
 This is a test application for data collection from an Ocean Optics USB 2000 spectrometer. The data will be output into a .mat file.
 
 ## Project
