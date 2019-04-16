@@ -12,3 +12,6 @@ This project is built in Visual Studio Community 2017.
 
 ## Running the Application
 When the application is run, it probes for devices and opens the first device found. Then it gets the spectral data from the spectrometer and saves it into a .MAT matrix. This file can be imported into MATLAB or an alternative such as GNU Octave.
+
+## Python
+The python testSDP.py is an example file that sends numbers back and forth to an app.
