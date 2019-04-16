@@ -17,9 +17,16 @@ try:
     while True:
         data = client_sock.recv(1024)
         print "received [%s]" % data
-        data = str(int(data) * 2)
-        print "now sending [%s]" % data
-        client_sock.send(data)
+
+        dataInt = int(data)
+        sendData = ""
+        
+        for i in range(dataInt):
+            sendData = sendData + str(i + 1) + " "
+            
+            
+        print "now sending [%s]" % sendData
+        client_sock.send(sendData)
 except IOError:
     pass
         
