@@ -115,11 +115,9 @@ int main()
 
 	// Iterate over Spectra
 	std::cout << "The program will now read out the spectra..." << std::endl;
-	outs << "# Created by Ohio University Spectrometer" << std::endl
-		<< "# name: spectrum" << std::endl
-		<< "# type: matrix" << std::endl
-		<< "# rows: 1" << std::endl
-		<< "# columns: " << numPixels << std::endl;
+	outs << "Created by Ohio University Spectrometer" << std::endl
+		<< "name,spectrum" << std::endl
+		<< "columns," << numPixels;
 
 	char quit = 'y';
 	while (quit != 'n' && quit != 'N')
@@ -129,14 +127,19 @@ int main()
 		{
 			std::cerr << "Error: Problem getting spectrum." << std::endl;
 		}
-		
-		for (int i = 0; i < numPixels; ++i)
+		else
 		{
-			outs << " " << spectrum[i];
+
+		  outs << std::endl <<  spectrum[0];
+		
+		  for (int i = 1; i < numPixels; ++i)
+		    {
+		      outs << "," << spectrum[i];
+		    }
 		}
 		
 		std::cout << "Get another sample? (Y) or (N)";
-		std::cin >> quit;
+	        std::cin >> quit;
 	}
 	
 
