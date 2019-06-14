@@ -1,5 +1,5 @@
 # Spectrometer-Data-Collection
-This is a test application for data collection from an Ocean Optics USB 2000 spectrometer. The data will be output into a .mat file.
+This is a test application for data collection from an Ocean Optics USB 2000 spectrometer. The data will be output into a .csv file.
 
 ## Project
 This project is made for Ohio University’s Program to Aid Career Exploration and is supervised by Wojciech Jadwisienczak. During the Spring 2019 semester, I am in charge of creating an Android application that can be used to collect data from an Ocean Optics USB2000 spectrometer. This is a sample program to test initialization and data collection for the SeaBreeze API. The features from this program will be integrated into the Android application.
