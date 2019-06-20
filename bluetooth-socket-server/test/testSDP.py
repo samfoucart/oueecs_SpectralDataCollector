@@ -1,4 +1,5 @@
 import bluetooth
+import math
 
 server_sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
 
@@ -22,7 +23,7 @@ try:
         sendData = ""
         
         for i in range(dataInt):
-            sendData = sendData + str(i + 1) + " "
+            sendData = sendData + str(math.sin(i * math.pi * 6 / float(dataInt)) * float(i)) + " "
             
             
         print "now sending [%s]" % sendData
