@@ -102,7 +102,7 @@ int main()
 	std::ofstream outs;
 	std::string filename = "";
 	std::string deviceString = deviceName;
-	filename = "spectrum-" + deviceString + ".MAT";
+	filename = "spectrum-" + deviceString + ".csv";
 	outs.open(filename.c_str());
 	if (outs.fail())
 	{
