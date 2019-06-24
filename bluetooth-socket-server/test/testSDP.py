@@ -24,6 +24,13 @@ try:
         
         for i in range(dataInt):
             sendData = sendData + str(math.sin(i * math.pi * 6 / float(dataInt)) * float(i)) + " "
+
+        sendData = sendData + "s "
+
+        for i in range(dataInt):
+            sendData = sendData + str(float(i) / float(2)) + " "
+
+        sendData = sendData + "w"    
             
             
         print "now sending [%s]" % sendData
