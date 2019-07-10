@@ -4,64 +4,77 @@ import time
 import subprocess
 import os
 
-serverSocket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+# Global Variables
+srcPath = "../data-collector/src/test-collector"
+hasDark = False
+sample = []
+wavelengths = []
+spectraDark = []
+wavelengthsDark = []
+spectraReference = []
+wavelengthsReference = []
+sendString = ""
 
+# Define Server Socket on RFCOMM
+serverSocket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 serverSocket.bind(("", bluetooth.PORT_ANY))
+# Listen on port 1
 port = serverSocket.getsockname()[1]
 serverSocket.listen(1)
 print("listening on port", port)
 
+# Advertise Socket
 uuid = "2f3b0104-fcb0-4bcf-8dda-6b06390c3c1a"
 bluetooth.advertise_service(serverSocket, "spectral-data-collector", uuid)
 
+# Wait for client to connect
 clientSocket, address = serverSocket.accept()
 print("Accepted connection from ", address)
 
-srcPath = "../data-collector/src/"
-hasCalibration = False
-spectra = []
-wavelengths = []
-spectraCalibration = []
-wavelengthsCalibration = []
-spectraUncalibrated = []
-wavelengthsUncalibrated = []
-sendString = ""
-
+# Main Loop
 try:
     while True:
-        print("startloop")
+        # Read from Json sent from client
         data = clientSocket.recv(1024)
-        print("received: ", data)
         receivedJson = json.loads(data)
-        print("1")
         fileName = time.time()
-        print("2")
-        isCalibration = receivedJson['isCalibration']
-        print("3")
+        testMode = receivedJson['testMode']
+        isDark = receivedJson['isDark']
+        isReference = receivedJson['isReference']
+        isTest = receivedJson['isTest']
         integrationTime = receivedJson['integrationTime']
+        collectionMode = receivedJson['collectionMode']
 
-        if isCalibration:
-            process = subprocess.Popen([srcPath + "test-collector", "-t", str(integrationTime), "-c", "-o", str(fileName)])
+        # Collect and Process data
+        if testMode is "dark":
+            process = subprocess.Popen([srcPath, "-t", str(integrationTime), "-c", "-o", str(fileName)])
             returnCode = process.wait()
             print(returnCode)
             if returnCode == 0:
                 jsonFile = open(str(fileName) + '.json')
-                print("4")
                 jsonData = json.load(jsonFile)
-                print("5")
-                del spectraCalibration[:]
-                del spectraCalibration[:]
-                print("6")
-                spectraCalibration = jsonData['spectraCalibration']
-                wavelengthsCalibration = jsonData['wavelengthsCalibration']
-                print("7")
-                hasCalibration = True
-                clientSocket.send("calibratedw")
+                del spectraDark[:]
+                del spectraDark[:]
+                spectraDark = jsonData['spectraCalibration']
+                wavelengthsDark = jsonData['wavelengthsCalibration']
+                hasDark = True
+                sendString = "{\n\t\"testMode\": "
+                sendString = sendString + str(testMode) + ",\n\t\"errorCode\": "
+                sendString = sendString + 0 + ",\n\t\"wavelengths\": ["
+                for i in range(len(wavelengthsDark) - 1):
+                    sendString = sendString + str(wavelengthsDark[i]) + ", "
+                
+                sendString = sendString + str(wavelengthsDark[len(wavelengthsDark) - 1])
+                sendString = sendString + "],\n\t\"sample\": ["
+                for i in range(len(wavelengthsDark) - 1):
+                    sendString = sendString + str(wavelengthsDark[i]) + ", " 
+                sendString
+                clientSocket.send("{\n\"calibrated")
                 os.remove(str(fileName) + '.json')
         
         else:
             print("nocalibration")
-            process = subprocess.Popen([srcPath + "test-collector", "-t", str(integrationTime), "-o", str(fileName)])
+            process = subprocess.Popen([srcPath, "-t", str(integrationTime), "-o", str(fileName)])
             returnCode = process.wait()
             if returnCode == 0:
                 jsonFile = open(str(fileName) + '.json')
