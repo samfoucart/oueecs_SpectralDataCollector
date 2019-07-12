@@ -5,6 +5,7 @@ class SpectralData(object):
         Attributes:
             darkWavelengths : float[]
                 An array of wavelengths taken from the background
+            darkSpectra : float[]
     """
     def __init__(self, darkWavelengths = [], darkSpectra = [], referenceWavelengths = [],
     referenceSpectra = [], sampleWavelengths = [], sampleSpectra = [], isReferenceAdjusted = False):

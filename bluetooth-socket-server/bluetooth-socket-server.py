@@ -61,7 +61,7 @@ while True:
                         spectralData.subtractBackground()
                     
                     sendString = SpectralData.createJson(testMode, returnCode,
-                        spectralData.darkSpectra, spectralData.darkWavelengths)
+                        spectralData.referenceSpectra, spectralData.referenceWavelengths)
 
                     clientSocket.send(sendString)
                     os.remove(str(fileName) + '.json')

@@ -35,7 +35,6 @@ int main(int argc, char* argv[]) {
 
 	std::string fileName = "";
 	std::string integrationTimeString = "";
-	bool isCalibration = false;
 
 	// Get filename and integration time from arguments
 	for (int i = 1; i < argc; ++i) {
@@ -55,9 +54,6 @@ int main(int argc, char* argv[]) {
 				std::cerr << "-o option requires an argument" << std::endl;
 				return 1;
 			}
-
-		} else if (arg == "-c") {
-			isCalibration = true;
 		}
 	}
 
@@ -73,11 +69,11 @@ int main(int argc, char* argv[]) {
 	double * wavelengths = new double[integrationTimeMillisec];
 
     // Generate Numbers for testing
-    for (int i = 0; i < integrationTimeMillisec; ++i) {
+    for (int i = 0; i < 2048; ++i) {
         spectrum[i] = 24 + ((21.694 * sin(1.936*i / 25)) - (12 * cos(1.936*i / 25)) * exp(-.5 * i / 25));
     }
 
-    for (int i = 0; i < integrationTimeMillisec; ++i) {
+    for (int i = 0; i < 2048; ++i) {
         wavelengths[i] = i / 2;
     }
 
@@ -107,11 +103,9 @@ int main(int argc, char* argv[]) {
     outs << "{" << std::endl 
             << "\"spectra";
 
-    if (isCalibration) {
-        outs << "Calibration\"";
-    } else {
-        outs << "\"";
-    }
+    
+	outs << "\"";
+    
 
     outs << ": [" << spectrum[0];
     for (int i = 1; i < integrationTimeMillisec; ++i) {
@@ -121,11 +115,9 @@ int main(int argc, char* argv[]) {
 
     outs << "," << std::endl
             << "\"wavelengths";
-    if (isCalibration) {
-        outs << "Calibration\"";
-    } else {
-        outs << "\"";
-    }
+    
+	outs << "\"";
+    
 
     outs << ": [" << wavelengths[0];
     for (int i = 1; i < integrationTimeMillisec; ++i) {
