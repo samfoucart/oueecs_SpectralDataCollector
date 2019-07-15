@@ -23,6 +23,8 @@ static void show_usage(std::string name) {
 			  << "\t-t INTEGRATION_TIME\t(Required) Set Integration Time in Milliseconds\n"
 			  << "\t-c\t\t\t(Optional) Specify Whether This Is A Calibration Run. Defaults to FALSE\n"
 			  << "\t-o FILE_NAME\t\t(Optional) Set Output File Name. Defaults to System Time\n"
+			  << "\t-b BOXCAR_WIDTH\t\t(Optional) Set width of boxcar filter. Defaults to 0\n"
+			  << "\t-a SCANS_TO_AVERAGE\t(Optional) Set number of scans to average. Defaults to 1.\n"
 			  << std::endl;
 }
 
@@ -35,7 +37,12 @@ int main(int argc, char* argv[]) {
 
 	std::string fileName = "";
 	std::string integrationTimeString = "";
+	std::string boxcarWidthString = "";
+	std::string scansToAverageString = "";
 	bool isCalibration = false;
+	int boxcarWidth = 1;
+	int scansToAverage = 1;
+	
 
 	// Get filename and integration time from arguments
 	for (int i = 1; i < argc; ++i) {
@@ -58,7 +65,25 @@ int main(int argc, char* argv[]) {
 
 		} else if (arg == "-c") {
 			isCalibration = true;
+			
+		} else if (arg == "-b") {
+			if (i + 1 < argc) {
+				boxcarWidthString = argv[++i];
+			} else {
+				std::cerr << "-b option requires an argument" << std::endl;
+				return 1;
+			}
+
+		} else if (arg == "-a") {
+			if (i + 1 < argc) {
+				scansToAverageString = argv[++i];
+			} else {
+				std::cerr << "-a option requires an argument" << std::endl;
+				return 1;
+			}
+
 		}
+		
 	}
 
 	if (integrationTimeString == "") {
@@ -66,7 +91,15 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	int integrationTimeMillisec = std::stoi(integrationTimeString);
+	int integrationTimeMillisec = std::stod(integrationTimeString);
+	
+	if (boxcarWidthString != "") {
+		boxcarWidth = std::stoi(boxcarWidthString);
+	}
+	
+	if (scansToAverageString != "") {
+		scansToAverage = std::stoi(scansToAverageString);
+	}
 
 	const int MILLISEC_TO_MICROSEC = 1000;
 
@@ -121,6 +154,30 @@ int main(int argc, char* argv[]) {
 		std::cerr << "Error: Problem setting integration time." << std::endl;
 		return 1;
 	}
+	/*
+	// Getting the Processing Features
+	long processingFeatures[8];
+	int numProcessingFeatures = wrapper->getNumberOfSpectrumProcessingFeatures(deviceID, &errorCode);
+	std::cout << "numProcessingFeatures: " << numProcessingFeatures << std::endl;
+	numProcessingFeatures = wrapper->getSpectrumProcessingFeatures(deviceID, &errorCode, processingFeatures, 8);
+	for (int i = 0; i < numProcessingFeatures; ++i) {
+		std::cout << "Feature " << i << ": " << processingFeatures[i] << std::endl;
+	}
+	
+	wrapper->spectrumProcessingBoxcarWidthSet(deviceID, processingFeatures[0], &errorCode, (unsigned char)boxcarWidth);
+	if (errorCode)
+	{
+		std::cerr << "Error: Problem setting integration time." << std::endl;
+		return 1;
+	}
+	
+	wrapper->spectrumProcessingScansToAverageSet(deviceID, processingFeatures[0], &errorCode, (unsigned char)scansToAverage);
+	if (errorCode)
+	{
+		std::cerr << "Error: Problem setting integration time." << std::endl;
+		return 1;
+	}*/
+	
 
 	// Getting number of Pixels
 	int numPixels = wrapper->spectrometerGetFormattedSpectrumLength(deviceID, features[0], &errorCode);

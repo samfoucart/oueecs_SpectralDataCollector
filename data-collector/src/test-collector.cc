@@ -65,16 +65,16 @@ int main(int argc, char* argv[]) {
 	int integrationTimeMillisec = std::stoi(integrationTimeString);
 
 	// Allocate Spectrum
-	double * spectrum = new double[integrationTimeMillisec];
-	double * wavelengths = new double[integrationTimeMillisec];
+	double * spectrum = new double[2048];
+	double * wavelengths = new double[2048];
 
     // Generate Numbers for testing
     for (int i = 0; i < 2048; ++i) {
-        spectrum[i] = 24 + ((21.694 * sin(1.936*i / 25)) - (12 * cos(1.936*i / 25)) * exp(-.5 * i / 25));
+        spectrum[i] = 24 + (((21.694 * sin(.7*i / 25)) - (12 * cos(.7*i / 25))) * exp(-.5 * i / integrationTimeMillisec));
     }
 
     for (int i = 0; i < 2048; ++i) {
-        wavelengths[i] = i / 2;
+        wavelengths[i] = static_cast<double>(i / 2);
     }
 
 
@@ -108,7 +108,7 @@ int main(int argc, char* argv[]) {
     
 
     outs << ": [" << spectrum[0];
-    for (int i = 1; i < integrationTimeMillisec; ++i) {
+    for (int i = 1; i < 2048; ++i) {
         outs << ", " << spectrum[i];
     }
     outs << "]";
@@ -120,7 +120,7 @@ int main(int argc, char* argv[]) {
     
 
     outs << ": [" << wavelengths[0];
-    for (int i = 1; i < integrationTimeMillisec; ++i) {
+    for (int i = 1; i < 2048; ++i) {
         outs << ", " << wavelengths[i];
     }
     outs << "]" << std::endl << "}";

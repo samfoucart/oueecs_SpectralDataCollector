@@ -6,7 +6,8 @@ import os
 from SpectralData import SpectralData
 
 # Global Variables
-srcPath = "../data-collector/src/test-collector"
+srcPath = "../data-collector/build/data-collector"
+dirPath = os.path.dirname(os.path.realpath(__file__))
 spectralData = SpectralData()
 sendString = ""
 
@@ -36,44 +37,53 @@ while True:
             fileName = time.time()
             testMode = receivedJson['testMode']
             integrationTime = receivedJson['integrationTime']
+            boxcarWidth = receivedJson['boxcarWidth']
+            scansToAverage = receivedJson['scansToAverage']
 
             # Open data-collector as subprocess
-            process = subprocess.Popen([srcPath, "-t", str(integrationTime), "-o", str(fileName)])
+            # To add boxcarWidth and scansToAverage, add "-b", str(boxcarWidth),
+            # to the following
+            process = subprocess.Popen([dirPath + '/' + srcPath, "-t", str(integrationTime), "-o", str(fileName)])
             returnCode = process.wait()
+            print(returnCode)
             if returnCode == 0:
                 # Read File made by data-collector
                 jsonFile = open(str(fileName) + '.json')
                 jsonData = json.load(jsonFile)
 
                 # Collect and Process data
-                if testMode is "dark":
-                    spectralData.setDark(jsonData['spectra'], jsonData['wavelengths'])
-                    sendString = SpectralData.createJson(testMode, returnCode,
-                        spectralData.darkSpectra, spectralData.darkWavelengths)
+                if testMode == "Background":
+                    tmpSpectra = jsonData['spectra']
+                    tmpWavelengths = jsonData['wavelengths']
+                    spectralData.setDark(tmpSpectra, tmpWavelengths)
+                    sendString = SpectralData.createJson(testMode, returnCode, spectralData.darkSpectra, spectralData.darkWavelengths)
 
                     clientSocket.send(sendString)
                     os.remove(str(fileName) + '.json')
-                
-                elif testMode is "reference":
-                    spectralData.setReference(jsonData['spectra'], jsonData['wavelengths'])
 
+                
+                elif testMode == "Reference":
+                    tmpSpectra = jsonData['spectra']
+                    tmpWavelengths = jsonData['wavelengths']
+                    spectralData.setReference(tmpSpectra, tmpWavelengths)
                     if spectralData.hasBackground:
                         spectralData.subtractBackground()
-                    
                     sendString = SpectralData.createJson(testMode, returnCode,
                         spectralData.referenceSpectra, spectralData.referenceWavelengths)
-
                     clientSocket.send(sendString)
                     os.remove(str(fileName) + '.json')
                     
                 else:
                     spectralData.setSample(jsonData['spectra'], jsonData['wavelengths'])
-                    spectralData.calculateGraph(testMode)
+                    #spectralData.calculateGraph(testMode)
                     sendString = SpectralData.createJson(testMode, returnCode,
                         spectralData.sampleSpectra, spectralData.sampleWavelengths)
 
                     clientSocket.send(sendString)
                     os.remove(str(fileName) + '.json')
+                    
+            else:
+                clientSocket.send("{\n\"errorCode\": " + str(returnCode) + "\n}")
 
 
     except IOError:
