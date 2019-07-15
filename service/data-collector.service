@@ -1,0 +1,12 @@
+[Unit]
+Description=Ohio University Spectral Data Collector
+After=multi-user.target
+Conflicts=getty@tty1.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python home/pi/PACE/oueecs_SpectralDataCollector/bluetooth-socket-server/bluetooth-socket-server.py
+StandardInput=tty-force
+
+[Install]
+WantedBy=multi-user.target
