@@ -37,8 +37,8 @@ while True:
             fileName = time.time()
             testMode = receivedJson['testMode']
             integrationTime = receivedJson['integrationTime']
-            boxcarWidth = receivedJson['boxcarWidth']
-            scansToAverage = receivedJson['scansToAverage']
+            #boxcarWidth = receivedJson['boxcarWidth']
+            #scansToAverage = receivedJson['scansToAverage']
 
             # Open data-collector as subprocess
             # To add boxcarWidth and scansToAverage, add "-b", str(boxcarWidth),
